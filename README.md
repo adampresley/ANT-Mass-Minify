@@ -22,6 +22,8 @@ of them as 1 and 2, and another two as 4 and 5, then the remaining 6 will
 be placed *in the first gap*. That means they will be placed at position 3,
 after the first two, and before the last two.
 
+**NOTE: This is still a work in progress**
+
 Example:
 
 ```ant
