@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<project name="ant-mass-minifier" basedir="." default="deploy">
+	<!--
+		Properties
+	-->
+	<propertyfile file="build.properties">
+		<entry key="majorVer" type="int" default="0" pattern="0" />
+		<entry key="minorVer" type="int" default="0" pattern="00" />
+		<entry key="buildVer" type="int" default="0" operation="+" pattern="0000" />
+	</propertyfile>
+	
+	<property file="build.properties" />
+	
+	<property name="source.path" value="src" />
+	<property name="build.path" value="build" />
+	<property name="lib.path" value="lib" />
+	<property name="deploy.path" value="deploy" />
+	<property name="output.jar" value="${deploy.path}/${ant.project.name}.jar" />
+	
+	<path id="project.classpath">
+		<fileset dir="${lib.path}" includes="**/*.jar" />
+	</path>
+
+	<property name="ant.lib.path" value="C:/ant/lib" />
+	<property name="test.lib.path" value="test/lib" />
+	<property name="deploy.lib.path" value="${basedir}/deploy/lib" />
+	<property name="test.path" value="${basedir}/test" />
+
+	<property name="doc.binary.path" value="${basedir}/bin/naturaldocs" />
+
+	<!--
+		Windows
+	<property name="doc.binary" value="${doc.binary.path}/NaturalDocsFromAnt.bat" />
+	-->
+	
+	<!--
+		Linux
+	-->
+	<property name="doc.binary" value="${doc.binary.path}/NaturalDocs" />
+
+
+	<property name="doc.path" value="${basedir}/doc" />
+	<property name="doc.project.path" value="${doc.path}/project" />
+
+
+
+	<!--
+		Name: clean
+		Destroys the old build and deployment path folders and
+		recreates them.
+	-->
+	<target name="clean" description="Clean up our mess">
+		<delete dir="${build.path}" />
+		<delete dir="${deploy.path}" />
+
+		<mkdir dir="${build.path}" />
+		<mkdir dir="${deploy.path}" />
+	</target>
+
+
+	<!--
+		Name: compile
+		Compiles all source code into the build path.
+
+		Depends:
+			- clean
+	-->
+	<target name="compile" depends="clean" description="Compile the source code.">
+		<javac srcdir="${source.path}" destdir="${build.path}" classpathref="project.classpath" includeJavaRuntime="true" includeantruntime="true" />
+	</target>
+	
+
+	<!--
+		Name: build-docs
+		Runs NaturalDocs to build all code documentation
+	-->
+	<target name="build-docs" description="Runs NaturalDocs to build all code documentation">
+		<echo message="Building code documentation..." />
+
+		<exec executable="${doc.binary}">
+			<arg value="-i" />
+			<arg value="${source.path}" />
+
+			<arg value="-o" />
+			<arg value="HTML" />
+			<arg value="${doc.path}" />
+
+			<arg value="-p" />
+			<arg value="${doc.project.path}" />
+
+			<arg value="-hl" />
+			<arg value="all" />
+		</exec>
+	</target>
+
+
+	<!--
+		Name: deploy
+		Builds a JAR file for distribution and all documentation.
+
+		Depends:
+			- build-docs
+			- compile
+	-->
+	<target name="deploy" depends="build-docs,compile" description="Deploy the application">
+		<pathconvert property="project.classpath.flat" pathsep=" ">
+			<path refid="project.classpath" />
+			<flattenmapper />
+		</pathconvert>
+		
+		<jar jarfile="${output.jar}" basedir="${build.path}">
+			<manifest>
+				<attribute name="Created-By" value="Adam Presley" />
+				<attribute name="Class-Path" value="${project.classpath.flat}" />
+				<attribute name="Implementation-Version" value="${majorVer}.${minorVer}.${buildVer}" />
+			</manifest>
+		</jar>
+		
+		<!-- Copy dependent files -->
+		<copy todir="${deploy.path}">
+			<fileset dir="${lib.path}" includes="**/*.jar" />
+		</copy>
+
+		<!-- Copy to the test directory -->
+		<copy todir="${test.path}">
+			<fileset dir="${deploy.path}" includes="**/*.jar" />
+		</copy>
+	</target>
+</project>

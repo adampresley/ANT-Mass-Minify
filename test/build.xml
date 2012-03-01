@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<project name="ant-mass-minifier-tester" basedir="." default="test">
+	<taskdef name="massminify" classname="com.adampresley.massminifier.MassMinify" classpath="ant-mass-minifier.jar" />
+
+	<!--
+		Name: test
+		Tests the new ANT task
+	-->
+	<target name="test" description="Test this thing">
+		<echo message="Cleaning up temporary files..." />
+		<delete dir="${basedir}/target" />
+
+		<echo message="Preparing test files..." />
+		<mkdir dir="${basedir}/target" />
+
+		<copy todir="${basedir}/target">
+			<fileset dir="${basedir}/source" />
+		</copy>
+
+		<!-- Test the minify on the JavaScript files -->
+		<massminify dir="${basedir}/target" minifyjs="true">
+			<order file="file1.js" position="10" />
+			<order file="library.js" position="1" />
+		</massminify>
+	</target>
+</project>
