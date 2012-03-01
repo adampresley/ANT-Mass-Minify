@@ -1,4 +1,5 @@
-= ANT Mass Minify =
+ANT Mass Minify
+===============
 
 Provides a custom ANT task that allows a user to scan a directory
 and minify all the JavaScript and CSS found. The user may optionally
@@ -22,11 +23,14 @@ be placed *in the first gap*. That means they will be placed at position 3,
 after the first two, and before the last two.
 
 Example:
-	> <massminify dir="/some/path/here/1" minifyjs="true" minifycss="true" combinecss="all-css.min.css" />
-	> <massminify dir="/some/path/here/2" minifyjs="true" combinejs="all-js.min.js" recurse="true" />
-	> <massminify dir="/some/path/here/3" minifyjs="true" consolidatejs="all-js-everywhere.min.js" recurse="true" />
-	> <massminify dir="/some/path/here/4" minifyjs="true" consolidatejs="all-js-everywhere.min.js" recurse="true">
-	>    <order file="library.js" position="1" />
-	>    <order file="file2.js" position="2" />
-	>    <order file="last.js" position="4" />
-	> </massminify>
+
+```ant
+<massminify dir="/some/path/here/1" minifyjs="true" minifycss="true" combinecss="all-css.min.css" />
+<massminify dir="/some/path/here/2" minifyjs="true" combinejs="all-js.min.js" recurse="true" />
+<massminify dir="/some/path/here/3" minifyjs="true" consolidatejs="all-js-everywhere.min.js" recurse="true" />
+<massminify dir="/some/path/here/4" minifyjs="true" consolidatejs="all-js-everywhere.min.js" recurse="true">
+   <order file="library.js" position="1" />
+   <order file="file2.js" position="2" />
+   <order file="last.js" position="4" />
+</massminify>
+```
